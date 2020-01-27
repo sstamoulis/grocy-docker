@@ -1,6 +1,24 @@
-FROM php:7.2-fpm-alpine
-LABEL maintainer="Talmai Oliveira <to@talm.ai>"
+FROM php:fpm AS builder
 
+RUN     apt-get update && \
+        apt-get install -y jq && \
+        
+
+FROM php:fpm
+LABEL maintainer="Stathis Stamoulis <sstamoulis2010@gmail.com>"
+
+RUN     apt-get update && \
+        apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
+        docker-php-ext-configure gd \
+            --with-gd \
+            --with-freetype \
+            --with-png \
+            --with-jpeg && \
+        NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
+        docker-php-ext-install -j${NPROC} gd
+        
+COPY --from=builder /www/ /www/
+        
 RUN     apk update && \
         apk upgrade && \
         apk add --no-cache --update yarn git python py-pip wget freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
