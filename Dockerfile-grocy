@@ -3,12 +3,12 @@ ARG version=latest
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN     apt-get update && \
         apt-get install -y jq yarn && \
-        wget -nv -O grocy.zip $(
-            curl -s https://api.github.com/repos/grocy/grocy/releases/$(
+        wget -nv -O grocy.zip $( \
+            curl -s https://api.github.com/repos/grocy/grocy/releases/$( \
                 [ "$version" = "latest" ] && \
                 echo latest || \
-                echo "tags/$version"
-            ) | jq -r '.assets[0].browser_download_url'
+                echo "tags/$version" \
+            ) | jq -r '.assets[0].browser_download_url' \
         ) && \
         mkdir /www && \
         unzip grocy.zip -d /www/ && \
