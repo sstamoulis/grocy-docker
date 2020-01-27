@@ -16,7 +16,7 @@ RUN     apt-get update && \
         composer -n install && \
         cp ./config-dist.php ./data/config.php && \
         yarn install && \
-        mkdir ./data/viewcache && \
+        mkdir ./data/viewcache
         
 
 FROM php:fpm
