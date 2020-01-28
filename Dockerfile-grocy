@@ -2,7 +2,7 @@ FROM php:fpm AS builder
 ARG version=latest
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN     apt-get update && \
-        apt-get install -y jq yarn unzip && \
+        apt-get install -y jq yarn && \
         mkdir /www && \
         curl -s -L "$( \
             curl -s https://api.github.com/repos/grocy/grocy/releases/$( \
