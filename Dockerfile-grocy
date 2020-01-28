@@ -13,9 +13,9 @@ RUN     apt-get update && \
         )" | tar zxf - -C /www --strip-components=1 && \
         cd /www/ && \
         composer -n install --ignore-platform-reqs && \
-        cp ./config-dist.php ./data/config.php && \
+        cp /www/config-dist.php /www/data/config.php && \
         yarn install && \
-        mkdir ./data/viewcache
+        mkdir /www/data/viewcache
         
 
 FROM php:fpm
