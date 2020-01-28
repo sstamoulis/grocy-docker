@@ -25,9 +25,7 @@ COPY --from=builder --chown=www-data:www-data /www/ /www/
 RUN     apt-get update && \
         apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
         docker-php-ext-configure gd \
-            --with-gd \
             --with-freetype \
-            --with-png \
             --with-jpeg && \
         NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
         docker-php-ext-install -j${NPROC} gd && \
