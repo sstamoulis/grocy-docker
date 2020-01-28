@@ -12,7 +12,7 @@ RUN     apt-get update && \
             ) | jq -r '.tarball_url' \
         )" | tar zxf - -C /www --strip-components=1 && \
         cd /www/ && \
-        composer -n install && \
+        composer -n install --ignore-platform-reqs && \
         cp ./config-dist.php ./data/config.php && \
         yarn install && \
         mkdir ./data/viewcache
