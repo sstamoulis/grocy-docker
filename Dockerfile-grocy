@@ -1,11 +1,8 @@
 FROM node AS builder
 ARG     version=latest
 
-# Needed to install global. See: https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#global-npm-dependencies
-ENV     NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV     PATH=$PATH:/home/node/.npm-global/bin
-
-RUN     npm install -g node-jq && \
+RUN     apt-get update && \
+        apt-get install -y jq && \
         mkdir /www && \
         curl -s -L "$( \
             curl -s https://api.github.com/repos/grocy/grocy/releases/$( \
