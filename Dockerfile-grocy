@@ -29,7 +29,7 @@ RUN     apt-get update && \
             --with-jpeg && \
         NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
         docker-php-ext-install -j${NPROC} gd && \
-        composer -n -d /www install && \
+        composer -n --working-dir=/www install && \
         chown -R www-data:www-data /www && \
     # Set environments
         sed -i "s|;*daemonize\s*=\s*yes|daemonize = no|g" /usr/local/etc/php-fpm.conf && \
