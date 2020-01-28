@@ -23,7 +23,7 @@ LABEL maintainer="Stathis Stamoulis <sstamoulis2010@gmail.com>"
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --from=builder --chown=www-data:www-data /www/ /www/
 RUN     apt-get update && \
-        apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
+        apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev unzip && \
         docker-php-ext-configure gd \
             --with-freetype \
             --with-jpeg && \
