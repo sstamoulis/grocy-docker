@@ -1,8 +1,6 @@
-FROM php:fpm AS builder
+FROM node AS builder
 ARG version=latest
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN     apt-get update && \
-        apt-get install -y jq yarn && \
+RUN     npm install -g node-jq && \
         mkdir /www && \
         curl -s -L "$( \
             curl -s https://api.github.com/repos/grocy/grocy/releases/$( \
@@ -12,7 +10,6 @@ RUN     apt-get update && \
             ) | jq -r '.tarball_url' \
         )" | tar zxf - -C /www --strip-components=1 && \
         cd /www/ && \
-        composer -n install --ignore-platform-reqs && \
         cp /www/config-dist.php /www/data/config.php && \
         yarn install && \
         mkdir /www/data/viewcache
@@ -21,6 +18,8 @@ RUN     apt-get update && \
 FROM php:fpm
 LABEL maintainer="Stathis Stamoulis <sstamoulis2010@gmail.com>"
 
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=builder --chown=www-data:www-data /www/ /www/
 RUN     apt-get update && \
         apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
         docker-php-ext-configure gd \
@@ -30,13 +29,13 @@ RUN     apt-get update && \
             --with-jpeg && \
         NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
         docker-php-ext-install -j${NPROC} gd && \
+        composer -n install && \
     # Set environments
         sed -i "s|;*daemonize\s*=\s*yes|daemonize = no|g" /usr/local/etc/php-fpm.conf && \
         sed -i "s|;*listen\s*=\s*127.0.0.1:9000|listen = 9000|g" /usr/local/etc/php-fpm.conf && \
         sed -i "s|;*listen\s*=\s*/||g" /usr/local/etc/php-fpm.conf && \
         sed -i "s|;*chdir\s*=\s*/var/www|chdir = /www|g" /usr/local/etc/php-fpm.d/www.conf
         
-COPY --from=builder --chown=www-data:www-data /www/ /www/
         
 # RUN     apk update && \
 #         apk upgrade && \
