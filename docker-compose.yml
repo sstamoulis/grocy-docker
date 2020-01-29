@@ -1,27 +1,23 @@
 # Usage:
 # docker-compose build && docker-compose up
-version: '2'
+version: '3.2'
 
 services:
-  grocy-nginx:
-    image: grocy/grocy-docker:nginx
-    build:
-      context: .
-      dockerfile: Dockerfile-grocy-nginx
+  nginx:
+    image: nginx:stable
     depends_on:
       - grocy
     ports:
       - '80:80'
-      - '443:443'
     volumes_from:
       - grocy
-    container_name: grocy-nginx
+    volumes:
+      - ./grocy.conf:/etc/nginx/conf.d/default.conf
 
   grocy:
-    image: grocy/grocy-docker:grocy
+    image: sstamoulis/grocy
     build:
       context: .
-      dockerfile: Dockerfile-grocy
     expose:
       - 9000
     volumes:
@@ -32,6 +28,6 @@ services:
       PHP_MAX_FILE_UPLOAD: 200
       PHP_MAX_POST:        100M
       GROCY_CULTURE: en
-    container_name: grocy
+
 volumes:
   database:
